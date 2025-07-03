@@ -3,6 +3,8 @@
 Este proyecto actúa como un sistema automatizado para gestionar los envíos de formularios de contacto de un sitio web.
 **Escucha** por nuevos mensajes, **organiza** la información entrante, **guarda** una copia en una base de datos, **alerta** al propietario del sitio web por correo electrónico, **usa IA** para redactar una respuesta amigable y **envía** un correo electrónico de confirmación automático a la persona que envió el formulario.
 
+---
+
 ## Vista General Visual
 
 ```mermaid
@@ -20,14 +22,20 @@ flowchart TD
     A4 -- "Proporciona contenido de respuesta" --> A5
 ```
 
+---
+
 ## Capítulos
 
-1.  [Receptor Webhook (Punto de Entrada)](01_receptor_webhook__punto_de_entrada__.md)
-2.  [Preparación de Datos (Estructurando la Entrada)](02_preparacion_de_datos__estructurando_la_entrada__.md)
-3.  [Almacenamiento en Base de Datos de Contactos](03_almacenamiento_en_base_de_datos_de_contactos.md)
-4.  [Correo de Notificación al Propietario](04_correo_de_notificacion_al_propietario_.md)
-5.  [Generación de Respuesta con IA](05_generacion_de_respuesta_con_ia_.md)
-6.  [Correo de Confirmación de Auto-Respuesta](06_correo_de_confirmacion_de_auto_respuesta_.md)
+1.  [Receptor Webhook (Punto de Entrada)](#capítulo-1-receptor-webhook-punto-de-entrada)
+2.  [Preparación de Datos (Estructurando la Entrada)](#capítulo-2-preparación-de-datos-estructurando-la-entrada)
+3.  [Almacenamiento en Base de Datos de Contactos](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos)
+4.  [Correo de Notificación al Propietario](#capítulo-4-correo-de-notificación-al-propietario)
+5.  [Generación de Respuesta con IA](#capítulo-5-generación-de-respuesta-con-ia)
+6.  [Correo de Confirmación de Auto-Respuesta](#capítulo-6-correo-de-confirmación-de-auto-respuesta)
+
+---
+
+<sub><sup>Generado por [AI Codebase Knowledge Builder](https://github.com/The-Pocket/Tutorial-Codebase-Knowledge).</sup></sub>
 
 ---
 
@@ -132,7 +140,6 @@ sequenceDiagram
     N8N_Webhook->>N8N_Webhook: Recibe y Captura los datos
     N8N_Webhook->>Siguiente_Nodo: Pasa los datos capturados
     Note over Siguiente_Nodo: Comienza a procesar los datos
-
 ```
 
 1.  **Acción del Usuario:** una persona interactúa con el formulario de contacto en tu sitio web.
@@ -146,13 +153,13 @@ El Receptor Webhook es el primer paso esencial en nuestra automatización de for
 
 Ahora que sabemos cómo los datos *entran* en nuestro flujo de trabajo, el siguiente paso es asegurarnos de que esos datos estén en un formato que sea fácil de usar para el resto de nuestra automatización.
 
-Pasemos a **[Preparación de Datos (Estructurando la Entrada)](02_preparacion_de_datos__estructurando_la_entrada__.md)** para ver cómo limpiamos y organizamos la información capturada.
+Pasemos a [**Preparación de Datos (Estructurando la Entrada)**](#capítulo-2-preparación-de-datos-estructurando-la-entrada) para ver cómo limpiamos y organizamos la información capturada.
 
 ---
 
 # Capítulo 2: Preparación de Datos (Estructurando la Entrada)
 
-¡Bienvenido de nuevo! En el capítulo anterior, [Receptor Webhook (Punto de Entrada)](01_receptor_webhook__punto_de_entrada__.md), aprendimos cómo el nodo Webhook actúa como el "timbre digital", capturando la información en bruto enviada por el formulario de contacto de tu sitio web en el momento en que alguien lo envía.
+¡Bienvenido de nuevo! En el capítulo anterior, [Receptor Webhook (Punto de Entrada)](#capítulo-1-receptor-webhook-punto-de-entrada), aprendimos cómo el nodo Webhook actúa como el "timbre digital", capturando la información en bruto enviada por el formulario de contacto de tu sitio web en el momento en que alguien lo envía.
 
 Ahora que tenemos los datos dentro de nuestro flujo de trabajo de n8n, debemos asegurarnos de que estén organizados y listos para los siguientes pasos. Piensa en los datos recibidos por el webhook como el correo entregado en tu puerta: está todo allí (cartas, paquetes, correo no deseado), pero necesita ser clasificado antes de que puedas hacer algo útil con él.
 
@@ -198,6 +205,7 @@ Basado en nuestro ejemplo del Capítulo 1, el ítem de datos que *entra* en el n
   "executionMode": "production"
 }
 ```
+
 La información clave que necesitamos está anidada dentro de `"body"`.
 
 ### Datos de Salida (del nodo Set "Edit Fields")
@@ -210,9 +218,10 @@ El nodo "Edit Fields" está configurado para extraer `nombre`, `correo`, `mensaj
   "correo": "ren32corp@gmail.com",
   "mensaje": "pruebaa veinteee",
   "token": "HFcDFwY0hWL0A...",
-  "hora": "20/6/2024, 15:30:00" // Ejemplo de marca de tiempo
+  "hora": "2025-07-03T16:25:56.592Z" 
 }
 ```
+
 Observa cómo los campos ahora están directamente en el nivel superior, y se ha agregado el campo `hora`. Esta estructura es mucho más fácil de trabajar para los siguientes nodos.
 
 ## Configurando el Nodo Set ("Edit Fields")
@@ -245,7 +254,7 @@ Examinemos la parte relevante del archivo `Formulario-N8N.json` que configura el
         {
           "id": "...",
           "name": "hora",
-          "value": "={{ new Date().toLocaleString(\"es-VE\", { timeZone: \"America/Caracas\" }) }}",
+          "value": "={{ new Date().toISOString() }}",
           "type": "string"
         },
         {
@@ -262,15 +271,16 @@ Examinemos la parte relevante del archivo `Formulario-N8N.json` que configura el
   "typeVersion": 3.4,
   "position": [ 100, 0 ],
   "id": "9fd05138-19c4-4eae-a45b-1e7eaa7cc7fb",
-  "name": "Edit Fields" // Este es nuestro nodo Set
+  "name": "Edit Fields" 
 }
 ```
+
 Desglosemos la parte clave, la sección `"assignments"`:
 
 * `"name": "nombre"`, `"value": "={{$json.body.nombre}}"`: Esto crea un nuevo campo llamado `nombre`. El `={{...}}` es una **expresión** de n8n. Significa "obtén el valor del ítem de datos de *entrada* (`$json`), específicamente del objeto `body`, y dentro de `body`, obtén el valor del campo `nombre`". Así, toma el `nombre` del cuerpo del webhook y lo coloca en un nuevo campo llamado `nombre` en el nivel superior del ítem de datos.
 * `"name": "correo"`, `"value": "={{$json.body.correo}}"`: Hace lo mismo para el campo `correo`.
 * `"name": "mensaje"`, `"value": "={{$json.body.mensaje}}"`: Hace lo mismo para el campo `mensaje`.
-* `"name": "hora"`, `"value": "={{ new Date().toLocaleString(...) }}"`: Esto crea un *nuevo* campo llamado `hora`. La expresión `new Date().toLocaleString(...)` es código JavaScript ejecutado por n8n. Obtiene la fecha y hora actuales y las formatea como una cadena en la zona horaria especificada (America/Caracas). Esto agrega una marca de tiempo a nuestros datos.
+* `"name": "hora"`, `"value": "={{ new Date().toISOString() }}"`: Esto crea un *nuevo* campo llamado `hora`. La expresión `new Date().toISOString()` es código JavaScript ejecutado por n8n. Obtiene la fecha y hora actuales y las formatea como una cadena en formato ISO 8601, que es un estándar universal. Esto agrega una marca de tiempo a nuestros datos.
 * `"name": "token"`, `"value": "={{ $json.body.token }}"`: Esto mantiene los datos del `token` del cuerpo del webhook, colocándolos en un campo de nivel superior llamado `token`.
 
 Al definir estas asignaciones, el nodo Set "Edit Fields" estructura eficazmente los datos, haciendo que la información relevante del formulario de contacto sea fácilmente accesible para el resto del flujo de trabajo.
@@ -291,7 +301,6 @@ sequenceDiagram
     SetNode->>SetNode: Crea un ítem de datos estructurado
     SetNode->>NextNode: Pasa el ítem de datos estructurado
     Note over NextNode: Listo para usar datos limpios
-
 ```
 
 1.  **Webhook Recibe y Pasa:** El nodo "Webhook" recibe la solicitud, captura los datos (incluido el envío del formulario en el `body`) y pasa estos datos en bruto al siguiente nodo.
@@ -304,13 +313,13 @@ sequenceDiagram
 
 El paso de Preparación de Datos, manejado por el nodo Set "Edit Fields", es crucial para hacer que nuestro flujo de trabajo de automatización sea eficiente y fácil de construir. Toma la entrada en bruto del webhook y la transforma en un formato limpio y estandarizado, extrayendo solo la información necesaria y agregando un contexto valioso como la marca de tiempo. Estos datos organizados ahora están listos para las siguientes etapas del proceso.
 
-Con nuestros datos ordenados y etiquetados, ahora podemos proceder a almacenarlos de forma segura. Pasemos a **[Almacenamiento en Base de Datos de Contactos](03_almacenamiento_en_base_de_datos_de_contactos.md)**.
+Con nuestros datos ordenados y etiquetados, ahora podemos proceder a almacenarlos de forma segura. Pasemos a [**Almacenamiento en Base de Datos de Contactos**](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos).
 
 ---
 
 # Capítulo 3: Almacenamiento en Base de Datos de Contactos
 
-¡Bienvenido de nuevo! En el capítulo anterior, [Preparación de Datos (Estructurando la Entrada)](02_preparacion_de_datos__estructurando_la_entrada__.md), tomamos los datos en bruto del envío de nuestro formulario de contacto y usamos el nodo Set para organizarlos de forma ordenada en un formato limpio y fácil de usar.
+¡Bienvenido de nuevo! En el capítulo anterior, [Preparación de Datos (Estructurando la Entrada)](#capítulo-2-preparación-de-datos-estructurando-la-entrada), tomamos los datos en bruto del envío de nuestro formulario de contacto y usamos el nodo Set para organizarlos de forma ordenada en un formato limpio y fácil de usar.
 
 Ahora que nuestros datos están clasificados y se ven bien, el siguiente paso crucial es guardarlos en un lugar seguro y permanente. ¿Por qué? Porque incluso si los correos electrónicos se pierden o las notificaciones se pasan por alto, necesitas un registro fiable de cada persona que te contactó.
 
@@ -346,7 +355,7 @@ El ítem de datos que llega al nodo "MongoDB" es la salida limpia y estructurada
   "correo": "ren32corp@gmail.com",
   "mensaje": "pruebaa veinteee",
   "token": "HFcDFwY0hWL0A...",
-  "hora": "20/6/2024, 15:30:00"
+  "hora": "2025-07-03T16:25:56.592Z"
 }
 ```
 
@@ -374,7 +383,7 @@ Veamos la parte relevante del archivo `Formulario-N8N.json` para el nodo "MongoD
   "typeVersion": 1.2,
   "position": [ 320, 0 ],
   "id": "4a784e92-d373-48df-b8b5-8fe52c55a64a",
-  "name": "MongoDB", // Este es nuestro nodo MongoDB
+  "name": "MongoDB",
   "credentials": { /* ... detalles de conexión ... */ }
 }
 ```
@@ -407,7 +416,6 @@ sequenceDiagram
     MongoDB_DB->>MongoNode: Confirma el éxito/fracaso de la inserción
     MongoNode->>NextNode: Pasa el resultado de la operación de inserción
     Note over NextNode: Listo para el siguiente paso (p.ej., enviar correos)
-
 ```
 
 1.  **Llegan los Datos Estructurados:** El nodo "MongoDB" recibe el ítem de datos limpio y estructurado del nodo "Edit Fields".
@@ -425,13 +433,13 @@ Almacenar los envíos de tu formulario de contacto en una base de datos usando e
 
 Con nuestros datos de contacto guardados de forma segura, ahora podemos usarlos para acciones adicionales, como notificarnos a nosotros mismos que ha llegado un nuevo mensaje.
 
-Pasemos a **[Correo de Notificación al Propietario](04_correo_de_notificacion_al_propietario_.md)** para ver cómo enviamos una alerta por correo electrónico después de un nuevo envío.
+Pasemos a [**Correo de Notificación al Propietario**](#capítulo-4-correo-de-notificación-al-propietario) para ver cómo enviamos una alerta por correo electrónico después de un nuevo envío.
 
 ---
 
 # Capítulo 4: Correo de Notificación al Propietario
 
-¡Bienvenido de nuevo! En el capítulo anterior, [Almacenamiento en Base de Datos de Contactos](03_almacenamiento_en_base_de_datos_de_contactos.md), guardamos con éxito los detalles del envío del formulario de contacto en nuestra base de datos, creando un registro fiable de cada mensaje.
+¡Bienvenido de nuevo! En el capítulo anterior, [Almacenamiento en Base de Datos de Contactos](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos), guardamos con éxito los detalles del envío del formulario de contacto en nuestra base de datos, creando un registro fiable de cada mensaje.
 
 Ahora que los datos están almacenados de forma segura, debemos asegurarnos de que el propietario del sitio web sea informado *inmediatamente* de que ha llegado un nuevo mensaje. Simplemente guardarlo no es suficiente: ¡el propietario necesita una alerta rápida!
 
@@ -445,7 +453,7 @@ Este paso resuelve el problema de mantener al propietario del sitio web actualiz
 
 En n8n, enviar correos electrónicos es sencillo usando el **nodo Email Send**. En nuestro flujo de trabajo `Formulario-N8N.json`, el nodo responsable de esto se llama **"Enviar email"**.
 
-Su trabajo es tomar los datos de contacto estructurados que preparamos en el Capítulo 2 ([Preparación de Datos (Estructurando la Entrada)](02_preparacion_de_datos__estructurando_la_entrada__.md)) y el resultado de guardar los datos en el Capítulo 3 ([Almacenamiento en Base de Datos de Contactos](03_almacenamiento_en_base_de_datos_de_contactos.md)), y usar esa información para redactar y enviar un correo electrónico a una dirección específica (el correo electrónico del propietario).
+Su trabajo es tomar los datos de contacto estructurados que preparamos en el Capítulo 2 ([Preparación de Datos (Estructurando la Entrada)](#capítulo-2-preparación-de-datos-estructurando-la-entrada)) y el resultado de guardar los datos en el Capítulo 3 ([Almacenamiento en Base de Datos de Contactos](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos)), y usar esa información para redactar y enviar un correo electrónico a una dirección específica (el correo electrónico del propietario).
 
 ### Datos de Entrada
 
@@ -461,7 +469,7 @@ El ítem de datos estructurado de "Edit Fields" se ve así:
   "correo": "ren32corp@gmail.com",
   "mensaje": "pruebaa veinteee",
   "token": "HFcDFwY0hWL0A...",
-  "hora": "20/6/2024, 15:30:00"
+  "hora": "2025-07-03T16:25:56.592Z"
 }
 ```
 
@@ -486,7 +494,7 @@ Veamos la parte relevante del archivo `Formulario-N8N.json` para el nodo "Enviar
     "fromEmail": "contacto@renebello.com",
     "toEmail": "contacto@renebello.com",
     "subject": "=Nuevo Contacto Desde la Web: {{ $json.nombre }}",
-    "html": "=<!DOCTYPE html>...", // El cuerpo HTML del correo
+    "html": "=<!DOCTYPE html>...", 
     "options": {
       "appendAttribution": false
     }
@@ -495,7 +503,7 @@ Veamos la parte relevante del archivo `Formulario-N8N.json` para el nodo "Enviar
   "typeVersion": 2.1,
   "position": [ 540, 0 ],
   "id": "06d3446c-a77d-4ff0-a423-3ca293212014",
-  "name": "Enviar email", // Nuestro nodo de correo
+  "name": "Enviar email",
   "credentials": { /* ... detalles de conexión SMTP ... */ }
 }
 ```
@@ -561,13 +569,13 @@ Enviar un "Correo de Notificación al Propietario" es un paso crítico para aseg
 
 Con el contacto guardado y el propietario notificado, ahora podemos explorar cómo automatizar el proceso de respuesta.
 
-Pasemos a **[Generación de Respuesta con IA](05_generacion_de_respuesta_con_ia_.md)** para ver cómo podemos usar la Inteligencia Artificial para ayudar a redactar una respuesta.
+Pasemos a [**Generación de Respuesta con IA**](#capítulo-5-generación-de-respuesta-con-ia) para ver cómo podemos usar la Inteligencia Artificial para ayudar a redactar una respuesta.
 
 ---
 
 # Capítulo 5: Generación de Respuesta con IA
 
-¡Bienvenido de nuevo! En nuestro viaje hasta ahora, hemos configurado un [Receptor Webhook (Punto de Entrada)](01_receptor_webhook__punto_de_entrada__.md) para capturar envíos de formularios de contacto, estructurado los datos de forma limpia con [Preparación de Datos (Estructurando la Entrada)](02_preparacion_de_datos__estructurando_la_entrada__.md), los hemos guardado de forma segura en nuestro [Almacenamiento en Base de Datos de Contactos](03_almacenamiento_en_base_de_datos_de_contactos.md) y hemos enviado un [Correo de Notificación al Propietario](04_correo_de_notificacion_al_propietario_.md) para alertarnos sobre el nuevo mensaje.
+¡Bienvenido de nuevo! En nuestro viaje hasta ahora, hemos configurado un [Receptor Webhook (Punto de Entrada)](#capítulo-1-receptor-webhook-punto-de-entrada) para capturar envíos de formularios de contacto, estructurado los datos de forma limpia con [Preparación de Datos (Estructurando la Entrada)](#capítulo-2-preparación-de-datos-estructurando-la-entrada), los hemos guardado de forma segura en nuestro [Almacenamiento en Base de Datos de Contactos](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos) y hemos enviado un [Correo de Notificación al Propietario](#capítulo-4-correo-de-notificación-al-propietario) para alertarnos sobre el nuevo mensaje.
 
 Ahora, añadamos un toque de magia: redactar automáticamente un educado mensaje de agradecimiento a la persona que nos contactó.
 
@@ -608,9 +616,7 @@ Por ejemplo, necesita el valor de `nombre` del ítem de datos, como:
 
 ```json
 {
-  // ... otros campos
-  "nombre": "Alice",
-  // ...
+  "nombre": "Alice"
 }
 ```
 
@@ -634,7 +640,7 @@ Desglosemos esto:
 * `Has recibido un mensaje de {{ $json.body.nombre }}.`: Informa a la IA de quién es el mensaje, usando el nombre real de los datos del formulario (`{{ $json.body.nombre }}`). Esto hace que el prompt sea dinámico.
 * `Tu tarea es redactar solo el párrafo principal...`: Define la tarea específica: escribir un párrafo corto y educado.
 * `Confirma la recepción... y menciona que le responderé...`: Especifica el contenido requerido del párrafo.
-* `No incluyas saludos... ni despedidas... Genera únicamente el texto...`: Restricciones negativas cruciais para asegurar que la IA *solo* genere el párrafo deseado y nada extra.
+* `No incluyas saludos... ni despedidas... Genera únicamente el texto...`: Restricciones negativas cruciales para asegurar que la IA *solo* genere el párrafo deseado y nada extra.
 
 Este prompt guía a la IA precisamente sobre qué generar.
 
@@ -647,7 +653,6 @@ Por ejemplo, si el nombre del remitente era "Alice", la salida podría verse alg
 ```json
 {
   "text": "Muchas gracias por tu mensaje, Alice. Confirmo que lo hemos recibido correctamente y te responderé personalmente lo antes posible."
-  // ... otros posibles detalles de la respuesta de la IA
 }
 ```
 
@@ -671,7 +676,7 @@ Veamos las partes relevantes del archivo `Formulario-N8N.json` para estos nodos:
     0
   ],
   "id": "5d5cdd3d-b8c7-4e8d-b815-37f11f791c39",
-  "name": "Basic LLM Chain" // Nuestro nodo de instrucciones de IA
+  "name": "Basic LLM Chain"
 },
 {
   "parameters": {
@@ -685,11 +690,11 @@ Veamos las partes relevantes del archivo `Formulario-N8N.json` para estos nodos:
     220
   ],
   "id": "3c620fbf-cb55-46c8-8fe6-a08d4be4d037",
-  "name": "Google Gemini Chat Model", // Nuestro nodo de cerebro de IA
+  "name": "Google Gemini Chat Model",
   "credentials": {
     "googlePalmApi": {
       "id": "GJxfbJyEpWMWu6au",
-      "name": "Google Gemini(PaLM) Api account" // Tus credenciales de IA
+      "name": "Google Gemini(PaLM) Api account"
     }
   }
 }
@@ -703,7 +708,6 @@ Parámetros clave:
     * `"promptType": "define"`: Estamos definiendo el prompt directamente dentro de este nodo.
     * `"text": "=Actúa como mi asistente de IA..."`: El texto del prompt en sí, usando una expresión (`=...`) e incluyendo la plantilla Handlebars `{{ $json.body.nombre }}` para inyectar el nombre del remitente de los datos originales del webhook.
     * Este nodo está conectado a través de la conexión `ai_languageModel` al nodo "Google Gemini Chat Model". Esto le dice *qué* modelo de IA usar.
-
 * **Nodo "Google Gemini Chat Model":**
     * `"type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini"`: Especifica el nodo del modelo de IA Google Gemini.
     * `"name": "Google Gemini Chat Model"`: El nombre en el editor.
@@ -733,7 +737,6 @@ sequenceDiagram
     AIModel-->>AIChain: Devuelve el texto generado
     AIChain->>NextNode: Pasa los datos del flujo + el texto generado
     Note over NextNode: Listo para usar el texto generado en la auto-respuesta
-
 ```
 
 1.  **Llegada de Datos:** El nodo "Basic LLM Chain" recibe datos del nodo anterior en el flujo de trabajo (que contiene o puede acceder a los datos originales del webhook).
@@ -752,13 +755,13 @@ Usar la Generación de Respuestas con IA nos permite redactar automáticamente u
 
 Este texto generado ahora está listo para ser incluido en el correo electrónico automático enviado de vuelta al remitente.
 
-Pasemos a **[Correo de Confirmación de Auto-Respuesta](06_correo_de_confirmacion_de_auto_respuesta_.md)** para ver cómo usamos este texto generado por la IA para enviar la confirmación final por correo electrónico al usuario.
+Pasemos a [**Correo de Confirmación de Auto-Respuesta**](#capítulo-6-correo-de-confirmación-de-auto-respuesta) para ver cómo usamos este texto generado por la IA para enviar la confirmación final por correo electrónico al usuario.
 
 ---
 
 # Capítulo 6: Correo de Confirmación de Auto-Respuesta
 
-¡Bienvenido de nuevo! En nuestros capítulos anteriores, hemos construido un sistema robusto: capturamos datos de formulario usando el [Receptor Webhook (Punto de Entrada)](01_receptor_webhook__punto_de_entrada__.md), los limpiamos y estructuramos con [Preparación de Datos (Estructurando la Entrada)](02_preparacion_de_datos__estructurando_la_entrada__.md), los guardamos de forma segura en nuestro [Almacenamiento en Base de Datos de Contactos](03_almacenamiento_en_base_de_datos_de_contactos.md), nos enviamos un [Correo de Notificación al Propietario](04_correo_de_notificacion_al_propietario_.md), e incluso generamos un educado mensaje de agradecimiento usando [Generación de Respuesta con IA](05_generacion_de_respuesta_con_ia_.md).
+¡Bienvenido de nuevo! En nuestros capítulos anteriores, hemos construido un sistema robusto: capturamos datos de formulario usando el [Receptor Webhook (Punto de Entrada)](#capítulo-1-receptor-webhook-punto-de-entrada), los limpiamos y estructuramos con [Preparación de Datos (Estructurando la Entrada)](#capítulo-2-preparación-de-datos-estructurando-la-entrada), los guardamos de forma segura en nuestro [Almacenamiento en Base de Datos de Contactos](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos), nos enviamos un [Correo de Notificación al Propietario](#capítulo-4-correo-de-notificación-al-propietario), e incluso generamos un educado mensaje de agradecimiento usando [Generación de Respuesta con IA](#capítulo-5-generación-de-respuesta-con-ia).
 
 Ahora, es el momento de la pieza final del rompecabezas: enviar un correo electrónico automático *de vuelta* a la persona que completó el formulario. Este es el **Correo de Confirmación de Auto-Respuesta**.
 
@@ -791,11 +794,9 @@ Ejemplo de datos relevantes disponibles para el nodo "Send Email":
 
 ```json
 {
-  // ... datos de nodos anteriores
   "body": {
     "nombre": "Alice",
-    "correo": "alice@example.com",
-    // ... otros datos del formulario
+    "correo": "alice@example.com"
   },
   "text": "Muchas gracias por tu mensaje, Alice. Confirmo que lo hemos recibido correctamente y te responderé personalmente lo antes posible."
 }
@@ -822,7 +823,7 @@ Veamos la parte relevante del archivo `Formulario-N8N.json` para el nodo "Send E
     "fromEmail": "contacto@renebello.com",
     "toEmail": "={{ $node[\"Webhook\"].json.body.correo }}",
     "subject": "=Confirmación de tu mensaje, {{ $node[\"Webhook\"].json.body.nombre }}",
-    "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n...\n</head>\n<body style=\"margin: 0; padding: 0;\">\n  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n    <tr>\n      <td align=\"center\" bgcolor=\"#000000\" style=\"background-color: #000000; ...\">\n        <div>\n          <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; ...\">\n            <tr>\n              <td>\n                <table class=\"container\" role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border: 1px solid #003B00; background-color: #000000;\">\n                  <tr>\n                    <td class=\"content\" style=\"padding: 30px 25px; color: #39FF14; line-height: 1.6;\">\n                      <p style=\"margin: 0 0 15px 0;\">> Saludos, {{ $node[\"Webhook\"].json.body.nombre }},</p>\n                      <p style=\"margin: 0 0 15px 0;\">\n                        > {{ $node[\"Basic LLM Chain\"].json.text }}\n                      </p>\n                      <p style=\"margin: 0 0 15px 0;\">\n                        > Un cordial saludo.\n                      </p>\n                    </td>\n                  </tr>\n                  <tr>\n                    <td class=\"footer\" align=\"center\" style=\"padding: 20px 25px; text-align: center; border-top: 1px solid #003B00;\">\n                      ...\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n          </table>\n        </div>\n      </td>\n    </tr>\n  </table>\n</body>\n</html>\n\n",
+    "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<body>\n    <p>> Saludos, {{ $node[\"Webhook\"].json.body.nombre }},</p>\n    <p>> {{ $node[\"Basic LLM Chain\"].json.text }}</p>\n    <p>> Un cordial saludo.</p>\n</body>\n</html>",
     "options": {
       "appendAttribution": false
     }
@@ -834,7 +835,7 @@ Veamos la parte relevante del archivo `Formulario-N8N.json` para el nodo "Send E
     0
   ],
   "id": "751b1f4c-02ca-4fcb-b64d-7774532a5ac2",
-  "name": "Send Email", // Nuestro nodo de Auto-Respuesta
+  "name": "Send Email",
   "credentials": { /* ... detalles de conexión SMTP ... */ }
 }
 ```
