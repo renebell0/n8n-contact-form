@@ -29,8 +29,6 @@ flowchart TD
 5. [Generación de Respuesta con IA](#capítulo-5-generación-de-respuesta-con-ia)
 6. [Correo de Confirmación de Auto-Respuesta](#capítulo-6-correo-de-confirmación-de-auto-respuesta)
 
-<sub><sup>Generado por [AI Codebase Knowledge Builder](https://github.com/The-Pocket/Tutorial-Codebase-Knowledge).</sup></sub>
-
 ---
 
 # Capítulo 1: Receptor Webhook (Punto de Entrada)
