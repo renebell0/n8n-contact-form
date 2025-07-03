@@ -1,0 +1,300 @@
+{
+  "name": "firma-n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "e50837e7-7363-432b-b765-9f946f66e710",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        0
+      ],
+      "id": "4a0e66f7-bb3c-413e-847b-fb2903f5543f",
+      "name": "Webhook",
+      "webhookId": "e50837e7-7363-432b-b765-9f946f66e710"
+    },
+    {
+      "parameters": {
+        "fromEmail": "contacto@renebello.com",
+        "toEmail": "contacto@renebello.com",
+        "subject": "=Nuevo Contacto Desde la Web: {{ $json.nombre }}",
+        "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Nuevo Mensaje</title>\n</head>\n<body style=\"margin: 0; padding: 0;\">\n  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n    <tr>\n      <td align=\"center\" bgcolor=\"#000000\" style=\"background-color: #000000; background-image: radial-gradient(rgba(0, 143, 17, 0.5) 1px, transparent 1px); background-size: 15px 15px;\">\n        <div>\n          <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; margin: 20px auto; font-family: 'Courier New', Courier, monospace;\">\n            <tr>\n              <td>\n                <table class=\"container\" role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border: 1px solid #003B00; background-color: #000000;\">\n                  <tr>\n                    <td class=\"content\" style=\"padding: 30px 25px; color: #39FF14; line-height: 1.6;\">\n                      <p style=\"margin: 0 0 15px 0;\">> Has recibido un nuevo mensaje desde el formulario web:</p>\n                      <p style=\"margin: 0 0 15px 0;\">> <strong>Nombre:</strong> {{ $json.nombre }}</p>\n                      <p style=\"margin: 0 0 15px 0;\">> <strong>Correo:</strong> {{ $json.correo }}</p>\n                      <p style=\"margin: 0 0 15px 0;\">> <strong>Mensaje:</strong><br>{{ $json.mensaje }}</p>\n                      <p style=\"margin: 0 0 15px 0;\">> <strong>Fecha/Hora:</strong> {{ $json.hora }}</p>\n                    </td>\n                  </tr>\n                  <tr>\n                    <td class=\"footer\" align=\"center\" style=\"padding: 20px 25px; text-align: center; border-top: 1px solid #003B00;\">\n                      <p style=\"margin: 0 0 15px 0; color: #39FF14; font-size: 12px; line-height: 1.5;\">\n                        Este correo fue generado automáticamente por el sistema de contacto de <strong>renebello.com</strong>\n                      </p>\n                      <p style=\"font-size: 11px; color: #39FF14; margin: 0;\">\n                        <a href=\"https://renebello.com\" target=\"_blank\" style=\"color: #39FF14; text-decoration: none;\">www.renebello.com</a>\n                        <span style=\"padding: 0 5px;\">|</span>\n                        <span>© 2025 René Bello</span>\n                      </p>\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n          </table>\n        </div>\n      </td>\n    </tr>\n  </table>\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        540,
+        0
+      ],
+      "id": "06d3446c-a77d-4ff0-a423-3ca293212014",
+      "name": "Enviar email",
+      "webhookId": "99000e0e-6d7d-4992-b214-09a616f190c7",
+      "credentials": {
+        "smtp": {
+          "id": "LeZilfZdhJzqmoOx",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Actúa como mi asistente de IA. Has recibido un mensaje de {{ $json.body.nombre }}.\n\nTu tarea es redactar solo el párrafo principal de un correo de agradecimiento. El tono debe ser amigable y profesional. Confirma la recepción de su mensaje y menciona que le responderé personalmente tan pronto como sea posible.\n\nNo incluyas saludos como \"Hola [nombre],\" ni despedidas como \"Un cordial saludo.\". Genera únicamente el texto del cuerpo del mensaje.\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        760,
+        0
+      ],
+      "id": "5d5cdd3d-b8c7-4e8d-b815-37f11f791c39",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        848,
+        220
+      ],
+      "id": "3c620fbf-cb55-46c8-8fe6-a08d4be4d037",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GJxfbJyEpWMWu6au",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "contacto@renebello.com",
+        "toEmail": "={{ $node[\"Webhook\"].json.body.correo }}",
+        "subject": "=Confirmación de tu mensaje, {{ $node[\"Webhook\"].json.body.nombre }}",
+        "html": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Plantilla Estilo Matrix</title>\n<!--[if gte mso 9]>\n<xml>\n  <o:OfficeDocumentSettings>\n    <o:AllowPNG/>\n    <o:PixelsPerInch>96</o:PixelsPerInch>\n  </o:OfficeDocumentSettings>\n</xml>\n<![endif]-->\n</head>\n<body style=\"margin: 0; padding: 0;\">\n\n  <!-- Tabla contenedora principal -->\n  <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n    <tr>\n      <td align=\"center\" bgcolor=\"#000000\" style=\"background-color: #000000; background-image: radial-gradient(rgba(0, 143, 17, 0.5) 1px, transparent 1px); background-size: 15px 15px;\">\n        <!--[if gte mso 9]>\n        <v:rect xmlns:v=\"urn:schemas-microsoft-com:vml\" fill=\"true\" stroke=\"false\" style=\"width:100%;\">\n          <v:fill color=\"#000000\" />\n          <v:textbox style=\"mso-fit-shape-to-text:true\" inset=\"0,0,0,0\">\n        <![endif]-->\n        <div>\n          <!-- Contenido principal -->\n          <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; margin: 20px auto; font-family: 'Courier New', Courier, monospace;\">\n            <tr>\n              <td>\n                <table class=\"container\" role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border: 1px solid #003B00; background-color: #000000;\">\n                  <!-- SECCIÓN DE CONTENIDO -->\n                  <tr>\n                    <td class=\"content\" style=\"padding: 30px 25px; color: #39FF14; line-height: 1.6;\">\n                      <!-- EXPRESIÓN CORREGIDA: Apunta explícitamente al nodo \"Webhook\" -->\n                      <p style=\"margin: 0 0 15px 0;\">> Saludos, {{ $node[\"Webhook\"].json.body.nombre }},</p>\n                      <p style=\"margin: 0 0 15px 0;\">\n                        <!-- NOTA: Asegúrate de que tu nodo de LangChain se llame exactamente \"Basic LLM Chain\" -->\n                        > {{ $node[\"Basic LLM Chain\"].json.text }}\n                      </p>\n                      <p style=\"margin: 0 0 15px 0;\">\n                        > Un cordial saludo.\n                      </p>\n                    </td>\n                  </tr>\n                  <!-- SECCIÓN DE LA FIRMA -->\n                  <tr>\n                    <td class=\"footer\" align=\"center\" style=\"padding: 20px 25px; text-align: center; border-top: 1px solid #003B00;\">\n                      <p style=\"margin: 0 0 15px 0; color: #39FF14; font-size: 12px; line-height: 1.5;\">\n                        Desarrollador Web Full Stack <span style=\"color: #39FF14;\">|</span> Especialista en Automatización\n                      </p>\n                      <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin-bottom: 15px;\">\n                        <tr>\n                          <td style=\"padding: 0 15px; text-align: center;\">\n                            <a href=\"https://www.linkedin.com/in/renebell0\" target=\"_blank\"><img src=\"https://img.icons8.com/ios-filled/50/aaaaaa/linkedin.png\" alt=\"LinkedIn\" width=\"26\" style=\"width: 26px; border:0;\"></a>\n                            <p style=\"margin-top: 5px; margin-bottom: 0; font-size: 11px;\">\n                              <a href=\"https://www.linkedin.com/in/renebell0\" target=\"_blank\" style=\"color: #39FF14; text-decoration: none;\" title=\"LinkedIn\">LinkedIn</a>\n                            </p>\n                          </td>\n                          <td style=\"padding: 0 15px; text-align: center;\">\n                            <a href=\"https://github.com/renebell0\" target=\"_blank\"><img src=\"https://img.icons8.com/ios-filled/50/aaaaaa/github.png\" alt=\"GitHub\" width=\"26\" style=\"width: 26px; border:0;\"></a>\n                             <p style=\"margin-top: 5px; margin-bottom: 0; font-size: 11px;\">\n                              <a href=\"https://github.com/renebell0\" target=\"_blank\" style=\"color: #39FF14; text-decoration: none;\" title=\"GitHub\">GitHub</a>\n                            </p>\n                          </td>\n                        </tr>\n                      </table>\n                       <p style=\"font-size: 11px; color: #39FF14; margin: 0;\">\n                        <a href=\"https://renebello.com/politicas/privacidad.html\" target=\"_blank\" style=\"color: #39FF14; text-decoration: none;\">Política de Privacidad</a>\n                        <span style=\"padding: 0 5px;\">|</span>\n                        <a href=\"https://renebello.com/politicas/terminos.html\" target=\"_blank\" style=\"color: #39FF14; text-decoration: none;\">Términos de Servicio</a>\n                         <span style=\"padding: 0 5px;\">|</span>\n                         <span>© 2025 René Bello.</span>\n                       </p>\n                    </td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n          </table>\n        </div>\n        <!--[if gte mso 9]>\n          </v:textbox>\n        </v:rect>\n        <![endif]-->\n      </td>\n    </tr>\n  </table>\n</body>\n</html>\n\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1136,
+        0
+      ],
+      "id": "751b1f4c-02ca-4fcb-b64d-7774532a5ac2",
+      "name": "Send Email",
+      "webhookId": "54b5b4dd-2481-4a81-90d0-e72e0b567817",
+      "credentials": {
+        "smtp": {
+          "id": "LeZilfZdhJzqmoOx",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "leads",
+        "fields": "=nombre,correo,mensaje,hora",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        0
+      ],
+      "id": "4a784e92-d373-48df-b8b5-8fe52c55a64a",
+      "name": "MongoDB",
+      "credentials": {
+        "mongoDb": {
+          "id": "JANDNJkDg4C0vkDM",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a4ec2164-56bb-4eaa-83b9-1d559c7ab1b8",
+              "name": "nombre",
+              "value": "={{$json.body.nombre}}",
+              "type": "string"
+            },
+            {
+              "id": "46e2a85c-703d-406f-9538-183289cfc39e",
+              "name": "correo",
+              "value": "={{$json.body.correo}}",
+              "type": "string"
+            },
+            {
+              "id": "466c7396-519b-403d-98d9-b1fdb6a9b2f4",
+              "name": "mensaje",
+              "value": "={{$json.body.mensaje}}",
+              "type": "string"
+            },
+            {
+              "id": "3f09e805-c468-4932-929d-0e0c1c4a41cf",
+              "name": "hora",
+              "value": "={{ new Date().toLocaleString(\"es-VE\", { timeZone: \"America/Caracas\" }) }}",
+              "type": "string"
+            },
+            {
+              "id": "7f6eab29-4fd4-4f1d-9bf0-4c0d7d5bac76",
+              "name": "token",
+              "value": "={{ $json.body.token }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        100,
+        0
+      ],
+      "id": "9fd05138-19c4-4eae-a45b-1e7eaa7cc7fb",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-0r8k.onrender.com",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0",
+            "content-length": "409",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "accept-language": "es-ES,es;q=0.8,en-US;q=0.5,en;q=0.3",
+            "cdn-loop": "cloudflare; loops=1",
+            "cf-connecting-ip": "190.142.64.94",
+            "cf-ipcountry": "VE",
+            "cf-ray": "953f9bbf3b167435-MIA",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "content-type": "application/json",
+            "origin": "https://68hjwvhyp234odwkhxtvbzwph4pba47h4bobk0swnl08ytw7id-h766678603.scf.usercontent.goog",
+            "priority": "u=4",
+            "referer": "https://68hjwvhyp234odwkhxtvbzwph4pba47h4bobk0swnl08ytw7id-h766678603.scf.usercontent.goog/",
+            "render-proxy-ttl": "4",
+            "rndr-id": "7972f57a-1e6a-4b55",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "cross-site",
+            "true-client-ip": "190.142.64.94",
+            "x-forwarded-for": "190.142.64.94, 172.70.83.146, 10.220.252.97",
+            "x-forwarded-proto": "https",
+            "x-request-start": "1750635811980102"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "nombre": "toto",
+            "correo": "ren32corp@gmail.com",
+            "mensaje": "pruebaa veinteee",
+            "token": "HFcDFwY0hWL0EFWyZFXhtUX1onEmQ3SUoyciwODDUIG0QiDEojG0YGDTRbTGtQMXkAEk5BFEIDUxxRd0QzRCNOcXYuG0cDGFp0NE94MFAsSQkxXQE2DmY-XRJKaRhJRQZTRCNQaHB6WCVzahcBIBNLWWBPSSlFdFpGMwMOLxk5YkQBC3UGCUYBAlFmQycrfwhgNX9RW3dYRwc_WxBpTiAReTEHAD8IIH8CGkphAkMcBUQGLEw4NHkJKDBsWEcmX11XJhtYZU12EVt1dl10DhJfdQRRNylaYgdBfCdYcwI5Xx1xa0psJ1kbAHUOfXcMcSY"
+          },
+          "webhookUrl": "https://n8n-0r8k.onrender.com/webhook/e50837e7-7363-432b-b765-9f946f66e710",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar email": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB": {
+      "main": [
+        [
+          {
+            "node": "Enviar email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MongoDB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "215e9b74-818a-48e9-98e4-1af0886bceaf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9945426a6b1f5aaba23e37680d3e73f6c9c346813fc33f95a926206417aca631"
+  },
+  "id": "6o0tx19UGEKcHhIW",
+  "tags": []
+}
