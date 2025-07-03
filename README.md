@@ -35,10 +35,6 @@ flowchart TD
 
 ---
 
-<sub><sup>Generado por [AI Codebase Knowledge Builder](https://github.com/The-Pocket/Tutorial-Codebase-Knowledge).</sup></sub>
-
----
-
 # Capítulo 1: Receptor Webhook (Punto de Entrada)
 
 ¡Bienvenido al primer capítulo de nuestro tutorial sobre cómo construir un flujo de trabajo de automatización de formularios de contacto usando n8n!
