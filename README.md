@@ -850,24 +850,6 @@ Al usar expresiones que hacen referencia a la salida de nodos anteriores como "W
 
 Visualicemos los pasos finales del flujo de trabajo:
 
-```mermaid
-sequenceDiagram
-    participant AIChain as Generación de IA (Basic LLM Chain)
-    participant EmailNode as Correo de Auto-Respuesta (Send Email)
-    participant EmailServer as Servidor SMTP
-    participant SenderInbox as Bandeja de Entrada del Remitente
-
-    AIChain->>EmailNode: Pasa datos del flujo (incl. texto de IA y datos del webhook original)
-    EmailNode->>EmailNode: Lee la config. y usa expresiones para Para, Asunto, Cuerpo
-    EmailNode->>EmailNode: Obtiene correo/nombre del remitente de los datos del Webhook
-    EmailNode->>EmailNode: Obtiene texto de IA de los datos de Basic LLM Chain
-    EmailNode->>EmailNode: Redacta el correo de auto-respuesta
-    EmailNode->>EmailServer: Envía correo vía SMTP usando credenciales
-    EmailServer->>SenderInbox: Entrega el correo de Auto-Respuesta
-
-    EmailNode->>End: El Flujo de Trabajo se Completa
-```
-
 1.  **Llegan los Datos con Texto de IA:** El nodo "Send Email" recibe el ítem de datos, que ahora incluye los detalles de contacto originales (del nodo "Webhook") y el texto generado por la IA (del nodo "Basic LLM Chain").
 2.  **El Nodo Lee la Configuración:** El nodo "Send Email" lee sus parámetros. Ve que necesita enviar un correo electrónico.
 3.  **Redactar Correo:** Usa las expresiones en `toEmail` y `subject` para obtener el correo y el nombre del remitente de los datos originales del webhook. Usa las expresiones en el cuerpo `html` para saludar al remitente por su nombre (nuevamente de los datos del webhook) y para incrustar el párrafo de agradecimiento generado por la IA (de los datos del nodo AI Chain).
