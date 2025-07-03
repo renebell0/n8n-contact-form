@@ -3,8 +3,6 @@
 Este proyecto actúa como un sistema automatizado para gestionar los envíos de formularios de contacto de un sitio web.
 **Escucha** por nuevos mensajes, **organiza** la información entrante, **guarda** una copia en una base de datos, **alerta** al propietario del sitio web por correo electrónico, **usa IA** para redactar una respuesta amigable y **envía** un correo electrónico de confirmación automático a la persona que envió el formulario.
 
----
-
 ## Vista General Visual
 
 ```mermaid
@@ -22,16 +20,16 @@ flowchart TD
     A4 -- "Proporciona contenido de respuesta" --> A5
 ```
 
----
-
 ## Capítulos
 
-1.  [Receptor Webhook (Punto de Entrada)](#capítulo-1-receptor-webhook-punto-de-entrada)
-2.  [Preparación de Datos (Estructurando la Entrada)](#capítulo-2-preparación-de-datos-estructurando-la-entrada)
-3.  [Almacenamiento en Base de Datos de Contactos](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos)
-4.  [Correo de Notificación al Propietario](#capítulo-4-correo-de-notificación-al-propietario)
-5.  [Generación de Respuesta con IA](#capítulo-5-generación-de-respuesta-con-ia)
-6.  [Correo de Confirmación de Auto-Respuesta](#capítulo-6-correo-de-confirmación-de-auto-respuesta)
+1. [Receptor Webhook (Punto de Entrada)](#capítulo-1-receptor-webhook-punto-de-entrada)
+2. [Preparación de Datos (Estructurando la Entrada)](#capítulo-2-preparación-de-datos-estructurando-la-entrada)
+3. [Almacenamiento en Base de Datos de Contactos](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos)
+4. [Correo de Notificación al Propietario](#capítulo-4-correo-de-notificación-al-propietario)
+5. [Generación de Respuesta con IA](#capítulo-5-generación-de-respuesta-con-ia)
+6. [Correo de Confirmación de Auto-Respuesta](#capítulo-6-correo-de-confirmación-de-auto-respuesta)
+
+<sub><sup>Generado por [AI Codebase Knowledge Builder](https://github.com/The-Pocket/Tutorial-Codebase-Knowledge).</sup></sub>
 
 ---
 
@@ -214,7 +212,7 @@ El nodo "Edit Fields" está configurado para extraer `nombre`, `correo`, `mensaj
   "correo": "ren32corp@gmail.com",
   "mensaje": "pruebaa veinteee",
   "token": "HFcDFwY0hWL0A...",
-  "hora": "2025-07-03T16:25:56.592Z" 
+  "hora": "2025-07-03T20:44:56.592Z" 
 }
 ```
 
@@ -351,7 +349,7 @@ El ítem de datos que llega al nodo "MongoDB" es la salida limpia y estructurada
   "correo": "ren32corp@gmail.com",
   "mensaje": "pruebaa veinteee",
   "token": "HFcDFwY0hWL0A...",
-  "hora": "2025-07-03T16:25:56.592Z"
+  "hora": "2025-07-03T20:44:56.592Z"
 }
 ```
 
@@ -465,7 +463,7 @@ El ítem de datos estructurado de "Edit Fields" se ve así:
   "correo": "ren32corp@gmail.com",
   "mensaje": "pruebaa veinteee",
   "token": "HFcDFwY0hWL0A...",
-  "hora": "2025-07-03T16:25:56.592Z"
+  "hora": "2025-07-03T20:44:56.592Z"
 }
 ```
 
@@ -757,7 +755,7 @@ Pasemos a [**Correo de Confirmación de Auto-Respuesta**](#capítulo-6-correo-de
 
 # Capítulo 6: Correo de Confirmación de Auto-Respuesta
 
-¡Bienvenido de nuevo! En nuestros capítulos anteriores, hemos construido un sistema robusto: capturamos datos de formulario usando el [Receptor Webhook (Punto de Entrada)](#capítulo-1-receptor-webhook-punto-de-entrada), los limpiamos y estructuramos con [Preparación de Datos (Estructurando la Entrada)](#capítulo-2-preparación-de-datos-estructurando-la-entrada), los guardamos de forma segura en nuestro [Almacenamiento en Base de Datos de Contactos](#capítulo-3-almacenamiento-en-base-de-datos-de-contactos), nos enviamos un [Correo de Notificación al Propietario](#capítulo-4-correo-de-notificación-al-propietario), e incluso generamos un educado mensaje de agradecimiento usando [Generación de Respuesta con IA](#capítulo-5-generación-de-respuesta-con-ia).
+¡Bienvenido de nuevo! En nuestros capítulos anteriores, hemos construido un sistema robusto: capturamos datos de formulario, los limpiamos, los guardamos, nos notificamos e incluso generamos una respuesta con IA.
 
 Ahora, es el momento de la pieza final del rompecabezas: enviar un correo electrónico automático *de vuelta* a la persona que completó el formulario. Este es el **Correo de Confirmación de Auto-Respuesta**.
 
@@ -766,7 +764,7 @@ Ahora, es el momento de la pieza final del rompecabezas: enviar un correo electr
 Imagina que acabas de completar un formulario de contacto en un sitio web. Presionas "Enviar" y... no pasa nada. Podrías preguntarte si tu mensaje realmente se envió. Enviar una auto-respuesta es como darle al remitente un **recibo digital**. Confirma instantáneamente:
 
 1.  **Mensaje Recibido:** Sí, tu envío llegó a nuestro sistema.
-2.  **Aquí está la Información:** A menudo incluye algún detalle, como confirmar de quién es (por nombre) y quizás incluso proporcionar el mensaje de agradecimiento generado por la IA.
+2.  **Aquí está la Información:** A menudo incluye algún detalle, como confirmar de quién es (por nombre).
 3.  **Qué Sucede a Continuación:** Les hace saber que te pondrás en contacto con ellos personalmente pronto.
 
 Este paso es crucial para una buena experiencia de usuario. Proporciona tranquilidad inmediata y profesionalismo.
