@@ -2,7 +2,7 @@
   <br/>
   <h1>N8N Workflow: Formulario de Contacto Automatizado</h1>
   <p>
-    Una solución backend sin código, potente y sencilla para tu formulario de contacto, impulsada por n8n y el envío de email por SMTP.
+    Una solución backend, potente y sencilla para tu formulario de contacto, impulsada por n8n y el envío de email por SMTP.
   </p>
   <p>
     <a href="https://github.com/renebell0/n8n-contact-form/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licencia-MIT-blue.svg" alt="Licencia MIT"></a>
